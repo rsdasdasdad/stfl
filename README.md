@@ -1,6 +1,6 @@
 # STFL — Simple Text Format Language
 
-**STFL** is an AI-friendly web language designed to be simpler than HTML. No closing tags, minimal syntax noise, easy for AI to generate, and editable with any text editor.
+**STFL** is an AI-friendly web language designed to be simpler than HTML. No closing tags, minimal syntax noise, easy for AI to generate, editable with any text editor, and compilable via drag-and-drop.
 
 ## Features
 
@@ -13,6 +13,7 @@
 - **Google Fonts** — import web fonts with `font_import "Font Name"`
 - **100,000+ icons** — Iconify integration (`icon "mdi:github"`)
 - **SVG support** — embed SVG directly
+- **Drag & Drop compile** — drop `.stfl` files onto `stfl.py` to compile instantly
 - **Lightweight** — single Python script compiles to standard HTML
 
 ## Quick Start
@@ -39,6 +40,20 @@ Or specify a custom input/output:
 ```bash
 python compiler/stfl.py examples/landing.stfl output/landing.html
 ```
+
+### Drag & Drop Compile (v0.8)
+
+On Windows, drag any `.stfl` file and drop it onto `compiler/stfl.py`:
+
+```
+stfl.py  ←  drop file here
+  ↓
+compiles to same directory as .html
+  ↓
+opens in browser automatically
+```
+
+The console window shows compilation results — press Enter to open in browser, then Enter again to exit.
 
 Output: `output/index.html`
 

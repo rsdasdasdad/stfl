@@ -1,6 +1,7 @@
 import os
 import re
 import sys
+import webbrowser
 
 INPUT_FILE = "examples/index.stfl"
 OUTPUT_FILE = "output/index.html"
@@ -58,7 +59,10 @@ def try_add_px(val):
         return val
 
 
-def compile_stfl(input_path=INPUT_FILE, output_path=OUTPUT_FILE):
+def compile_stfl(input_path=INPUT_FILE, output_path=None):
+    if output_path is None:
+        output_path = derive_output_path(input_path)
+
     with open(input_path, "r", encoding="utf-8") as f:
         lines = f.readlines()
 
@@ -272,13 +276,52 @@ def compile_stfl(input_path=INPUT_FILE, output_path=OUTPUT_FILE):
     with open(output_path, "w", encoding="utf-8") as f:
         f.write(final_html)
 
-    print(f"STFL Compiler v0.7")
+    print(f"STFL Compiler v0.8")
     print(f"  Input : {input_path}")
     print(f"  Output: {output_path}")
     print("Compile Success.")
 
+    return output_path
+
+
+def derive_output_path(input_path):
+    """Derive output HTML path from input STFL path."""
+    base, ext = os.path.splitext(input_path)
+    if ext.lower() in (".stfl", ".txt"):
+        return base + ".html"
+    return input_path + ".html"
+
+
+def open_in_browser(output_path):
+    """Open the compiled HTML in the default browser."""
+    abs_path = os.path.abspath(output_path)
+    webbrowser.open(f"file://{abs_path}")
+
+
+def main():
+    is_drag_drop = len(sys.argv) > 1
+    inp = sys.argv[1] if is_drag_drop else INPUT_FILE
+    out = sys.argv[2] if len(sys.argv) > 2 else (OUTPUT_FILE if not is_drag_drop else None)
+
+    if is_drag_drop:
+        print("=" * 48)
+        print("  STFL Drag & Drop Compiler v0.8")
+        print("=" * 48)
+        print()
+
+    output_path = compile_stfl(inp, out)
+
+    if is_drag_drop:
+        print()
+        print("=" * 48)
+        print("  Compilation complete!")
+        print(f"  Output: {output_path}")
+        print("=" * 48)
+        print()
+        input("按 Enter 键在浏览器中打开...")
+        open_in_browser(output_path)
+        input("按 Enter 键退出...")
+
 
 if __name__ == "__main__":
-    inp = sys.argv[1] if len(sys.argv) > 1 else INPUT_FILE
-    out = sys.argv[2] if len(sys.argv) > 2 else OUTPUT_FILE
-    compile_stfl(inp, out)
+    main()
