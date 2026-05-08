@@ -4,15 +4,11 @@ import re
 INPUT_FILE = "examples/index.stfl"
 OUTPUT_FILE = "output/index.html"
 
-# STFL CSS 简写引擎
 CSS_MAP = {
-    "bg": "background",
-    "text": "color",
-    "size": "font-size",
-    "radius": "border-radius",
-    "spacing": "padding",
-    "font": "font-family",
-    "bold": "font-weight"
+    "bg": "background", "text": "color", "size": "font-size",
+    "radius": "border-radius", "spacing": "padding", 
+    "font": "font-family", "bold": "font-weight",
+    "flex": "display", "dir": "flex-direction", "gap": "gap"
 }
 
 def extract_text(line):
@@ -34,10 +30,7 @@ def parse_attributes(line):
     return attrs
 
 def attrs_to_html(attrs):
-    res = ""
-    for k, v in attrs.items():
-        res += f' {k}="{v}"'
-    return res
+    return "".join([f' {k}="{v}"' for k, v in attrs.items()])
 
 def compile_stfl():
     with open(INPUT_FILE, "r", encoding="utf-8") as f:
@@ -47,30 +40,41 @@ def compile_stfl():
     css_rules = []
     font_imports = []
     page_title = "STFL Page"
-    use_icon_engine = False # 是否启用了内置 SVG 图标引擎
+    use_icon_engine = False
+    
+    # 新增：缩进层级栈，用于自动生成 </div>
+    stack = [] 
 
     for line in lines:
-        line = line.strip()
-        if not line or line.startswith("#"): continue
+        if not line.strip() or line.strip().startswith("#"): continue
+        
+        # 计算当前行的缩进空格数
+        indent = len(line) - len(line.lstrip())
+        stripped = line.strip()
 
-        attrs = parse_attributes(line)
+        # 如果当前缩进小于等于栈顶的缩进，说明容器结束了，自动闭合 </div>
+        while stack and stack[-1][0] >= indent:
+            _, closing_tag = stack.pop()
+            html_body.append(closing_tag)
+
+        attrs = parse_attributes(stripped)
         html_attrs = attrs_to_html(attrs)
-        line_no_attrs = re.sub(r'\[.*?\]', '', line).strip()
+        line_no_attrs = re.sub(r'\[.*?\]', '', stripped).strip()
 
-        # 1. 页面设置
-        if line.startswith("page "):
+        # 1. 页面头部配置
+        if stripped.startswith("page "):
             page_title = extract_text(line_no_attrs)
             continue
-        if line.startswith("font_import "):
+        if stripped.startswith("font_import "):
             font_url = extract_text(line_no_attrs).replace(" ", "+")
             font_imports.append(f'<link href="https://fonts.googleapis.com/css2?family={font_url}:wght@400;700&display=swap" rel="stylesheet">')
             continue
 
         # 2. CSS 引擎
-        if line.startswith("style "):
+        if stripped.startswith("style "):
             selector = extract_text(line_no_attrs)
-            if "->" in line:
-                rules_str = line.split("->")[1].strip()
+            if "->" in stripped:
+                rules_str = stripped.split("->")[1].strip()
                 rules = [r.strip() for r in rules_str.split(",")]
                 compiled_rules = []
                 for r in rules:
@@ -81,34 +85,35 @@ def compile_stfl():
                 css_rules.append(f"{selector} {{ {' '.join(compiled_rules)} }}")
             continue
 
-        # 3. 新增：原生 SVG 与内置 Icon 引擎
-        if line.startswith("svg "):
-            svg_code = extract_text(line_no_attrs)
-            # 用 span 包裹以支持类名和样式，并确保 SVG 颜色继承
-            html_body.append(f"<span{html_attrs} class='stfl-svg'>{svg_code}</span>")
-            continue
-            
-        if line.startswith("icon "):
-            icon_name = extract_text(line_no_attrs)
-            html_body.append(f'<iconify-icon icon="{icon_name}"{html_attrs}></iconify-icon>')
-            use_icon_engine = True
+        # 3. 新增：Box 容器引擎 (完美替代 div)
+        if stripped.startswith("box:") or (stripped.startswith("box ") and stripped.endswith(":")):
+            html_body.append(f"<div{html_attrs}>")
+            # 把当前缩进级别压入栈中，等待后续闭合
+            stack.append((indent, "</div>"))
             continue
 
-        # 4. 基础 HTML 组件
-        if line.startswith("title "): html_body.append(f"<h1{html_attrs}>{extract_text(line_no_attrs)}</h1>")
-        elif line.startswith("subtitle "): html_body.append(f"<h2{html_attrs}>{extract_text(line_no_attrs)}</h2>")
-        elif line.startswith("text "): html_body.append(f"<p{html_attrs}>{extract_text(line_no_attrs)}</p>")
-        elif line.startswith("button "): html_body.append(f"<button{html_attrs}>{extract_text(line_no_attrs)}</button>")
-        elif line.startswith("img "): html_body.append(f'<img src="{extract_text(line_no_attrs)}"{html_attrs}>')
-        elif line.startswith("input "): html_body.append(f'<input type="text" placeholder="{extract_text(line_no_attrs)}"{html_attrs}>')
-        elif line.startswith("item "): html_body.append(f"<li{html_attrs}>{extract_text(line_no_attrs)}</li>")
-        elif line == "divider": html_body.append(f"<hr{html_attrs}>")
-        elif line.startswith("link "):
-            url_part = line.split("->")
+        # 4. 图标与组件
+        if stripped.startswith("svg "): html_body.append(f"<span{html_attrs} class='stfl-svg'>{extract_text(line_no_attrs)}</span>")
+        elif stripped.startswith("icon "):
+            html_body.append(f'<iconify-icon icon="{extract_text(line_no_attrs)}"{html_attrs}></iconify-icon>')
+            use_icon_engine = True
+        elif stripped.startswith("title "): html_body.append(f"<h1{html_attrs}>{extract_text(line_no_attrs)}</h1>")
+        elif stripped.startswith("subtitle "): html_body.append(f"<h2{html_attrs}>{extract_text(line_no_attrs)}</h2>")
+        elif stripped.startswith("text "): html_body.append(f"<p{html_attrs}>{extract_text(line_no_attrs)}</p>")
+        elif stripped.startswith("button "): html_body.append(f"<button{html_attrs}>{extract_text(line_no_attrs)}</button>")
+        elif stripped.startswith("img "): html_body.append(f'<img src="{extract_text(line_no_attrs)}"{html_attrs}>')
+        elif stripped.startswith("input "): html_body.append(f'<input type="text" placeholder="{extract_text(line_no_attrs)}"{html_attrs}>')
+        elif stripped.startswith("item "): html_body.append(f"<li{html_attrs}>{extract_text(line_no_attrs)}</li>")
+        elif stripped == "divider": html_body.append(f"<hr{html_attrs}>")
+        elif stripped.startswith("link "):
+            url_part = stripped.split("->")
             url = re.sub(r'\[.*?\]', '', url_part[1]).strip() if len(url_part) > 1 else "#"
             html_body.append(f'<a href="{url}"{html_attrs}>{extract_text(line_no_attrs)}</a>')
 
-    # 动态引入外部脚本
+    # 文件结束时，闭合所有未闭合的容器
+    while stack:
+        html_body.append(stack.pop()[1])
+
     icon_script = '<script src="https://code.iconify.design/iconify-icon/1.0.7/iconify-icon.min.js"></script>' if use_icon_engine else ""
     css_string = "\n  ".join(css_rules)
     font_string = "\n".join(font_imports)
@@ -116,7 +121,6 @@ def compile_stfl():
     default_css = """
   body { font-family: system-ui, -apple-system, sans-serif; padding: 20px; line-height: 1.5; color: #333; }
   img { max-width: 100%; }
-  /* SVG 默认样式：继承文字颜色并垂直居中 */
   .stfl-svg svg { width: 1em; height: 1em; vertical-align: -0.125em; fill: currentColor; }
   iconify-icon { display: inline-flex; vertical-align: -0.125em; }
     """
@@ -133,7 +137,6 @@ def compile_stfl():
 {icon_script}
 <style>
 {default_css}
-  /* STFL Generated CSS */
   {css_string}
 </style>
 </head>
@@ -144,7 +147,7 @@ def compile_stfl():
     with open(OUTPUT_FILE, "w", encoding="utf-8") as f:
         f.write(final_html)
 
-    print("✅ STFL v0.5 编译成功！（已支持 原生 SVG 与 Iconify 引擎）")
+    print("✅ STFL v0.6 编译成功！（已支持 Box 容器与自动缩进引擎）")
 
 if __name__ == "__main__":
     compile_stfl()
