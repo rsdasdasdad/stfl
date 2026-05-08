@@ -1,19 +1,66 @@
-```stfl
 page "STFL Demo"
 
-section:
+font_import "Inter"
 
-  title "欢迎来到 STFL" [class=hero]
+style ".card" -> bg:white, padding:20px, radius:12, shadow:0 2px 8px rgba(0,0,0,0.1)
+style ".hero" -> bg:linear-gradient(135deg, #667eea 0%, #764ba2 100%), text:white, padding:60px, radius:16
 
-  text "这是新的 STFL 编译器"
+box [class=hero]:
+  title "STFL":
+    size = 48
+    color = white
+    font = Inter
+    align = center
 
-  button "开始"
+  text "Simple Text Format Language":
+    size = 20
+    color = white
+    align = center
+    opacity = 0.9
 
-  card:
-    title "AI Friendly"
+  button "Get Started":
+    bg = #667eea
+    color = white
+    padding = 14
+    radius = 10
+    border = none
+    weight = bold
 
-    text "适合 AI 生成"
+divider
 
-text "他说 \"STFL 很强\""
+box [class=card]:
+  title "Features"
+  item "No closing tags — indentation-based"
+  item "TXT editable — any text editor"
+  item "AI friendly — optimized for LLMs"
+  item "Inline CSS system — style without CSS files"
+  item "Box containers — auto-indent layout engine"
+  item "Iconify support — 100,000+ icons"
 
-link "GitHub" -> https://github.com
+divider
+
+title "Icon Gallery":
+  size = 28
+  align = center
+
+icon "mdi:github":
+  size = 48
+  color = #333
+
+icon "logos:python":
+  size = 48
+
+icon "ph:rocket-launch-duotone":
+  size = 48
+  color = #667eea
+
+divider
+
+link "GitHub Repository" -> https://github.com
+
+svg "<svg viewBox='0 0 24 24'><circle cx='12' cy='12' r='10' fill='#667eea'/></svg>"
+
+text "Built with STFL":
+  color = gray
+  size = 14
+  align = center

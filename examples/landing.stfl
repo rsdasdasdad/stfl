@@ -1,18 +1,62 @@
-page "STFL CSS"
+page "STFL Landing Page"
 
-title "欢迎":
-  color = white
-  bg = blue
-  size = 40
-  padding = 20
+font_import "Noto Sans SC"
+
+style ".hero" -> bg:black, text:white, padding:80px, radius:20
+style ".card" -> bg:white, padding:24px, radius:16, shadow:0 4px 12px rgba(0,0,0,0.08)
+
+box [class=hero]:
+  title "STFL":
+    size = 56
+    font = "Noto Sans SC"
+    align = center
+    weight = bold
+
+  text "AI 友好的网页语言 / AI-Friendly Web Language":
+    size = 18
+    color = #aaa
+    align = center
+
+  button "开始使用":
+    bg = white
+    color = black
+    padding = 14
+    radius = 10
+    weight = bold
+
+divider
+
+box [class=card]:
+  title "为什么选择 STFL？":
+    size = 24
+
+  item "没有闭合标签，只有缩进"
+  item "纯文本编辑，无需复杂 IDE"
+  item "AI 生成优化，Token 更少"
+  item "内置 CSS 系统"
+  item "100,000+ 图标支持"
+
+divider
+
+title "示例展示":
+  size = 28
   align = center
 
-text "这是新的 CSS 系统":
-  color = gray
+text "这是一个带样式的段落":
+  color = #667eea
   size = 18
+  font = "Noto Sans SC"
+  weight = bold
 
-button "开始":
-  bg = black
-  color = white
-  padding = 12
-  radius = 8
+text "普通段落文本，没有任何样式修饰。"
+
+icon "mdi:heart":
+  size = 36
+  color = red
+
+link "View on GitHub" -> https://github.com
+
+text "© 2026 STFL":
+  size = 12
+  color = gray
+  align = center
