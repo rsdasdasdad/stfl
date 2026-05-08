@@ -5,7 +5,10 @@ INPUT_FILE = "examples/index.stfl"
 OUTPUT_FILE = "output/index.html"
 
 html = []
-stack = []
+
+# =========================
+# TOOLS
+# =========================
 
 def extract_text(line):
     start = line.find('"')
@@ -44,76 +47,170 @@ def attrs_to_html(attrs):
 
     return result
 
-def compile_line(line):
+# =========================
+# STYLE SYSTEM
+# =========================
+
+STYLE_MAP = {
+    "color": "color",
+    "bg": "background",
+    "size": "font-size",
+    "width": "width",
+    "height": "height",
+    "padding": "padding",
+    "margin": "margin",
+    "radius": "border-radius",
+    "align": "text-align",
+    "weight": "font-weight",
+    "border": "border",
+    "display": "display",
+    "flex": "display:flex",
+    "gap": "gap"
+}
+
+def compile_style(style_lines):
+    css = []
+
+    for line in style_lines:
+        line = line.strip()
+
+        if "=" not in line:
+            continue
+
+        key, value = line.split("=", 1)
+
+        key = key.strip()
+        value = value.strip()
+
+        if key in STYLE_MAP:
+
+            css_key = STYLE_MAP[key]
+
+            if key == "flex":
+                css.append("display:flex;")
+                continue
+
+            # auto px
+            if value.isdigit() and key in [
+                "size",
+                "width",
+                "height",
+                "padding",
+                "margin",
+                "radius",
+                "gap"
+            ]:
+                value += "px"
+
+            css.append(f"{css_key}:{value};")
+
+    return " ".join(css)
+
+# =========================
+# PARSER
+# =========================
+
+def compile_block(lines, i):
+
+    line = lines[i].rstrip()
     stripped = line.strip()
 
     if not stripped:
-        return ""
+        return "", i
 
     if stripped.startswith("#"):
-        return ""
+        return "", i
 
     attrs = parse_attributes(stripped)
     html_attrs = attrs_to_html(attrs)
 
+    styles = []
+
+    # detect style block
+    j = i + 1
+
+    while j < len(lines):
+
+        next_line = lines[j]
+
+        if next_line.startswith("  "):
+            styles.append(next_line)
+            j += 1
+        else:
+            break
+
+    style_attr = ""
+
+    if styles:
+        css = compile_style(styles)
+
+        if css:
+            style_attr = f' style="{css}"'
+
+    # PAGE
     if stripped.startswith("page"):
         title = extract_text(stripped)
 
-        return f"""<!DOCTYPE html>
+        html = f"""<!DOCTYPE html>
 <html>
 <head>
 <meta charset="UTF-8">
 <title>{title}</title>
-<link rel="stylesheet" href="style.css">
 </head>
 <body>
 """
 
+        return html, j - 1
+
+    # TITLE
     if stripped.startswith("title"):
         text = extract_text(stripped)
-        return f"<h1{html_attrs}>{text}</h1>"
+        return f"<h1{html_attrs}{style_attr}>{text}</h1>", j - 1
 
+    # TEXT
     if stripped.startswith("text"):
         text = extract_text(stripped)
-        return f"<p{html_attrs}>{text}</p>"
+        return f"<p{html_attrs}{style_attr}>{text}</p>", j - 1
 
+    # BUTTON
     if stripped.startswith("button"):
         text = extract_text(stripped)
-        return f"<button{html_attrs}>{text}</button>"
+        return f"<button{html_attrs}{style_attr}>{text}</button>", j - 1
 
+    # IMAGE
     if stripped.startswith("img"):
         src = extract_text(stripped)
-        return f'<img src="{src}"{html_attrs}>'
+        return f'<img src="{src}"{html_attrs}{style_attr}>', j - 1
 
+    # LINK
     if stripped.startswith("link"):
+
         text = extract_text(stripped)
 
         url_match = re.search(r'->\s*(.+)', stripped)
         url = url_match.group(1) if url_match else "#"
 
-        return f'<a href="{url}"{html_attrs}>{text}</a>'
+        return f'<a href="{url}"{html_attrs}{style_attr}>{text}</a>', j - 1
 
-    if stripped.startswith("section:"):
-        stack.append("</section>")
-        return f"<section{html_attrs}>"
+    return "", j - 1
 
-    if stripped.startswith("card:"):
-        stack.append("</div>")
-        return '<div class="card">'
-
-    return ""
+# =========================
+# MAIN
+# =========================
 
 with open(INPUT_FILE, "r", encoding="utf-8") as file:
     lines = file.readlines()
 
-for line in lines:
-    compiled = compile_line(line)
+i = 0
+
+while i < len(lines):
+
+    compiled, new_i = compile_block(lines, i)
 
     if compiled:
         html.append(compiled)
 
-while stack:
-    html.append(stack.pop())
+    i = new_i + 1
 
 html.append("</body>")
 html.append("</html>")

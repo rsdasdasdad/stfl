@@ -1,21 +1,18 @@
-page "Landing"
+page "STFL CSS"
 
-section:
+title "欢迎":
+  color = white
+  bg = blue
+  size = 40
+  padding = 20
+  align = center
 
-  title "STFL"
+text "这是新的 CSS 系统":
+  color = gray
+  size = 18
 
-  text "AI Native Web Language"
-
-  button "Get Started"
-
-card:
-  title "Fast"
-
-  text "Simple syntax"
-
-card:
-  title "AI Friendly"
-
-  text "Perfect for LLMs"
-
-link "GitHub" -> https://github.com
+button "开始":
+  bg = black
+  color = white
+  padding = 12
+  radius = 8

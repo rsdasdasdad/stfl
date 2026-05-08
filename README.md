@@ -1,3 +1,4 @@
+Markdown
 
 # STFL
 
@@ -13,8 +14,8 @@ STFL is an AI-friendly web language designed to be simpler than HTML, editable i
 - TXT editable
 - AI friendly
 - HTML compiler
+- Built-in CSS system
 - No closing tags
-- Indentation-based layout
 - Lightweight
 - Easy to learn
 
@@ -27,14 +28,24 @@ STFL is an AI-friendly web language designed to be simpler than HTML, editable i
 ```stfl
 page "My Website"
 
-title "Welcome"
+title "Welcome":
+  color = white
+  bg = blue
+  size = 40
+  padding = 20
 
-text "Hello STFL"
+text "Hello STFL":
+  color = gray
+  size = 18
 
-button "Start"
+button "Start":
+  bg = black
+  color = white
+  padding = 12
+  radius = 8
 
 link "GitHub" -> https://github.com
-Output HTML
+HTML Output
 HTML
 
 <!DOCTYPE html>
@@ -45,11 +56,17 @@ HTML
 </head>
 <body>
 
-<h1>Welcome</h1>
+<h1 style="color:white;background:blue;font-size:40px;padding:20px;">
+Welcome
+</h1>
 
-<p>Hello STFL</p>
+<p style="color:gray;font-size:18px;">
+Hello STFL
+</p>
 
-<button>Start</button>
+<button style="background:black;color:white;padding:12px;border-radius:8px;">
+Start
+</button>
 
 <a href="https://github.com">GitHub</a>
 
@@ -84,74 +101,44 @@ Generated file:
 text
 
 output/index.html
-STFL Syntax
+Syntax
 page
 Defines webpage title.
 
 stfl
 
 page "My Site"
-Compiles to:
-
-HTML
-
-<title>My Site</title>
 title
 Creates heading.
 
 stfl
 
 title "Hello"
-Output:
-
-HTML
-
-<h1>Hello</h1>
 text
 Creates paragraph.
 
 stfl
 
 text "Hello World"
-Output:
-
-HTML
-
-<p>Hello World</p>
 button
 Creates button.
 
 stfl
 
 button "Click"
-Output:
-
-HTML
-
-<button>Click</button>
 img
 Creates image.
 
 stfl
 
 img "logo.png"
-Output:
-
-HTML
-
-<img src="logo.png">
 link
 Creates hyperlink.
 
 stfl
 
 link "OpenAI" -> https://openai.com
-Output:
-
-HTML
-
-<a href="https://openai.com">OpenAI</a>
-Layout Components
+Containers
 section
 Creates section block.
 
@@ -159,13 +146,6 @@ stfl
 
 section:
   title "News"
-Output:
-
-HTML
-
-<section>
-  <h1>News</h1>
-</section>
 card
 Creates card container.
 
@@ -173,32 +153,71 @@ stfl
 
 card:
   text "Card Content"
-Output:
-
-HTML
-
-<div class="card">
-  <p>Card Content</p>
-</div>
 Attributes
 class
 stfl
 
-title "Hello" [class=main]
-Output:
-
-HTML
-
-<h1 class="main">Hello</h1>
+title "Hello" [class=hero]
 id
 stfl
 
 button "Start" [id=begin]
+CSS System
+STFL includes a built-in CSS styling system.
+
+Style blocks are written below components using indentation.
+
+Example
+stfl
+
+title "Hello":
+  color = red
+  size = 32
+  align = center
 Output:
 
 HTML
 
-<button id="begin">Start</button>
+<h1 style="color:red;font-size:32px;text-align:center;">
+Hello
+</h1>
+Supported CSS Properties
+STFL	CSS
+color	color
+bg	background
+size	font-size
+width	width
+height	height
+padding	padding
+margin	margin
+radius	border-radius
+align	text-align
+weight	font-weight
+border	border
+display	display
+gap	gap
+Example UI
+stfl
+
+page "Landing"
+
+title "STFL":
+  color = white
+  bg = black
+  size = 48
+  padding = 24
+  align = center
+
+text "AI Native Web Language":
+  color = gray
+  size = 20
+  align = center
+
+button "Get Started":
+  bg = blue
+  color = white
+  padding = 14
+  radius = 10
 Escaping Quotes
 Use backslash:
 
@@ -210,41 +229,6 @@ Output:
 HTML
 
 <p>He said "Hello"</p>
-Full Example
-stfl
-
-page "STFL Demo"
-
-section:
-
-  title "Welcome" [class=hero]
-
-  text "STFL is AI friendly"
-
-  button "Start"
-
-  card:
-    title "Fast"
-
-    text "Simple syntax"
-
-link "GitHub" -> https://github.com
-Project Structure
-text
-
-stfl/
-├── compiler/
-│   └── stfl.py
-├── examples/
-│   └── index.stfl
-├── output/
-│   └── index.html
-├── spec/
-│   └── stfl-spec.md
-├── docs/
-│   └── ai-guide.md
-├── README.md
-└── LICENSE
 AI Usage
 STFL is designed for AI generation.
 
@@ -258,170 +242,25 @@ Rules:
 - Only output STFL
 - No HTML
 - Use title/text/button/section/card
+Project Structure
+text
+
+stfl/
+├── compiler/
+│   └── stfl.py
+├── docs/
+├── examples/
+├── output/
+├── spec/
+├── README.md
+└── LICENSE
 Future Features
 AST parser
-CSS system
-Components
+Component system
 Variables
 Loops
 Conditions
+External CSS
 React compiler
-Live preview
 VSCode extension
-License
-MIT License
-
-text
-
-
-━━━━━━━━━━━━━━━━━━━
-
-# spec/stfl-spec.md
-
-```md
-# STFL Specification v0.2
-
----
-
-# Syntax Rules
-
-- UTF-8 encoding
-- Indentation-based
-- No closing tags
-- Double quotes for text
-- Optional attributes
-
----
-
-# Components
-
-## page
-
-```stfl
-page "Site"
-title
-stfl
-
-title "Hello"
-text
-stfl
-
-text "Hello"
-button
-stfl
-
-button "Click"
-img
-stfl
-
-img "image.png"
-link
-stfl
-
-link "GitHub" -> https://github.com
-Containers
-section
-stfl
-
-section:
-card
-stfl
-
-card:
-Attributes
-stfl
-
-title "Hello" [class=hero,id=main]
-Escaping
-stfl
-
-text "He said \"Hello\""
-Comments
-stfl
-
-# this is comment
-text
-
-
-━━━━━━━━━━━━━━━━━━━
-
-# docs/ai-guide.md
-
-```md
-# STFL AI Guide
-
-STFL is optimized for AI generation.
-
----
-
-# Rules
-
-- Only output STFL
-- Never output HTML
-- Use indentation
-- Use semantic blocks
-
----
-
-# Recommended Components
-
-- page
-- section
-- card
-- hero
-- title
-- text
-- button
-
----
-
-# Example Prompt
-
-```text
-Generate a modern STFL website.
-
-Requirements:
-- dark theme
-- hero section
-- pricing cards
-- footer
-Example Output
-stfl
-
-page "AI Site"
-
-hero:
-  title "Future"
-
-  text "AI Native Web"
-
-  button "Start"
-text
-
-
-━━━━━━━━━━━━━━━━━━━
-
-# examples/landing.stfl
-
-```stfl
-page "Landing"
-
-section:
-
-  title "STFL"
-
-  text "AI Native Web Language"
-
-  button "Get Started"
-
-card:
-  title "Fast"
-
-  text "Simple syntax"
-
-card:
-  title "AI Friendly"
-
-  text "Perfect for LLMs"
-
-link "GitHub" -> https://github.com
+Live preview
