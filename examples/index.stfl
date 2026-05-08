@@ -1,0 +1,9 @@
+page "STFL Demo"
+
+title "欢迎来到 STFL"
+
+text "这是一个 AI 友好的网页语言"
+
+button "开始"
+
+link "GitHub" -> https://github.com
