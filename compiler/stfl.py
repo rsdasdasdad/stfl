@@ -5,6 +5,7 @@ INPUT_FILE = "examples/index.stfl"
 OUTPUT_FILE = "output/index.html"
 
 html = []
+font_links = []
 
 # =========================
 # TOOLS
@@ -64,14 +65,16 @@ STYLE_MAP = {
     "weight": "font-weight",
     "border": "border",
     "display": "display",
-    "flex": "display:flex",
-    "gap": "gap"
+    "gap": "gap",
+    "font": "font-family"
 }
 
 def compile_style(style_lines):
+
     css = []
 
     for line in style_lines:
+
         line = line.strip()
 
         if "=" not in line:
@@ -86,10 +89,6 @@ def compile_style(style_lines):
 
             css_key = STYLE_MAP[key]
 
-            if key == "flex":
-                css.append("display:flex;")
-                continue
-
             # auto px
             if value.isdigit() and key in [
                 "size",
@@ -101,6 +100,10 @@ def compile_style(style_lines):
                 "gap"
             ]:
                 value += "px"
+
+            # font with spaces
+            if key == "font" and " " in value:
+                value = f'"{value}"'
 
             css.append(f"{css_key}:{value};")
 
@@ -126,13 +129,13 @@ def compile_block(lines, i):
 
     styles = []
 
-    # detect style block
     j = i + 1
 
     while j < len(lines):
 
         next_line = lines[j]
 
+        # style block
         if next_line.startswith("  "):
             styles.append(next_line)
             j += 1
@@ -147,42 +150,109 @@ def compile_block(lines, i):
         if css:
             style_attr = f' style="{css}"'
 
+    # =========================
+    # FONT IMPORT
+    # =========================
+
+    if stripped.startswith("font_import"):
+
+        font_name = extract_text(stripped)
+
+        google_font = font_name.replace(" ", "+")
+
+        link = f'<link href="https://fonts.googleapis.com/css2?family={google_font}&display=swap" rel="stylesheet">'
+
+        font_links.append(link)
+
+        return "", j - 1
+
+    # =========================
     # PAGE
+    # =========================
+
     if stripped.startswith("page"):
+
         title = extract_text(stripped)
 
-        html = f"""<!DOCTYPE html>
+        font_html = "\n".join(font_links)
+
+        return f"""<!DOCTYPE html>
 <html>
 <head>
 <meta charset="UTF-8">
 <title>{title}</title>
+
+{font_html}
+
+<style>
+
+body {{
+    font-family: Arial, sans-serif;
+    margin: 40px;
+}}
+
+.card {{
+    border: 1px solid #ddd;
+    padding: 20px;
+    border-radius: 12px;
+    margin-top: 20px;
+}}
+
+button {{
+    border: none;
+    cursor: pointer;
+}}
+
+</style>
+
 </head>
 <body>
-"""
+""", j - 1
 
-        return html, j - 1
-
+    # =========================
     # TITLE
+    # =========================
+
     if stripped.startswith("title"):
+
         text = extract_text(stripped)
+
         return f"<h1{html_attrs}{style_attr}>{text}</h1>", j - 1
 
+    # =========================
     # TEXT
+    # =========================
+
     if stripped.startswith("text"):
+
         text = extract_text(stripped)
+
         return f"<p{html_attrs}{style_attr}>{text}</p>", j - 1
 
+    # =========================
     # BUTTON
+    # =========================
+
     if stripped.startswith("button"):
+
         text = extract_text(stripped)
+
         return f"<button{html_attrs}{style_attr}>{text}</button>", j - 1
 
+    # =========================
     # IMAGE
+    # =========================
+
     if stripped.startswith("img"):
+
         src = extract_text(stripped)
+
         return f'<img src="{src}"{html_attrs}{style_attr}>', j - 1
 
+    # =========================
     # LINK
+    # =========================
+
     if stripped.startswith("link"):
 
         text = extract_text(stripped)
@@ -191,6 +261,22 @@ def compile_block(lines, i):
         url = url_match.group(1) if url_match else "#"
 
         return f'<a href="{url}"{html_attrs}{style_attr}>{text}</a>', j - 1
+
+    # =========================
+    # SECTION
+    # =========================
+
+    if stripped.startswith("section:"):
+
+        return f"<section{html_attrs}{style_attr}>", j - 1
+
+    # =========================
+    # CARD
+    # =========================
+
+    if stripped.startswith("card:"):
+
+        return f'<div class="card"{style_attr}>', j - 1
 
     return "", j - 1
 
@@ -212,11 +298,14 @@ while i < len(lines):
 
     i = new_i + 1
 
+# auto close tags
 html.append("</body>")
 html.append("</html>")
 
+# create output folder
 os.makedirs("output", exist_ok=True)
 
+# write html
 with open(OUTPUT_FILE, "w", encoding="utf-8") as file:
     file.write("\n".join(html))
 
