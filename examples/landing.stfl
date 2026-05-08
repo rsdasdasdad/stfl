@@ -1,0 +1,21 @@
+page "Landing"
+
+section:
+
+  title "STFL"
+
+  text "AI Native Web Language"
+
+  button "Get Started"
+
+card:
+  title "Fast"
+
+  text "Simple syntax"
+
+card:
+  title "AI Friendly"
+
+  text "Perfect for LLMs"
+
+link "GitHub" -> https://github.com

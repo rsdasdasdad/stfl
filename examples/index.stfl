@@ -1,9 +1,19 @@
+```stfl
 page "STFL Demo"
 
-title "欢迎来到 STFL"
+section:
 
-text "这是一个 AI 友好的网页语言"
+  title "欢迎来到 STFL" [class=hero]
 
-button "开始"
+  text "这是新的 STFL 编译器"
+
+  button "开始"
+
+  card:
+    title "AI Friendly"
+
+    text "适合 AI 生成"
+
+text "他说 \"STFL 很强\""
 
 link "GitHub" -> https://github.com
