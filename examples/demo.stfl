@@ -1,0 +1,616 @@
+page "STFL v1.3 — Full Feature Demo"
+
+# ==========================================
+# CSS VARIABLES
+# ==========================================
+
+var primary=#6366f1
+var secondary=#ec4899
+var accent=#f59e0b
+var dark=#1e1b4b
+var radius=12
+
+# ==========================================
+# FONTS
+# ==========================================
+
+font_import "Inter"
+
+# ==========================================
+# GLOBAL STYLES
+# ==========================================
+
+style "button" -> cursor:pointer, transition:all 0.2s ease, font-family:inherit, border:none, font-weight:600
+style "button:hover" -> opacity:0.85, transform:translateY(-1px)
+style "button:active" -> transform:translateY(0)
+style "a" -> color:var(--primary), text-decoration:none, font-weight:500, transition:color 0.2s
+style "a:hover" -> color:var(--secondary)
+style ".demo-card" -> background:white, padding:24, border-radius:var(--radius), box-shadow:0 2px 16px rgba(0,0,0,0.08), transition:transform 0.2s, border:1px solid #f1f5f9
+style ".demo-card:hover" -> transform:translateY(-2px), box-shadow:0 8px 24px rgba(0,0,0,0.12)
+style ".demo-section" -> padding:60px 20px, background:#f8fafc
+style ".badge" -> background:var(--primary), color:white, padding:4px 12px, border-radius:999px, font-size:13px, font-weight:600, display:inline-block
+style ".code-block" -> background:#1e293b, color:#e2e8f0, padding:16px, border-radius:8px, font-family:monospace, font-size:14px, line-height:1.7
+style ".input-demo" -> width:100%, padding:10px 14px, border:2px solid #e2e8f0, border-radius:8px, font-size:14px, transition:border-color 0.2s
+style ".input-demo:focus" -> border-color:var(--primary), outline:none
+style ".section-title" -> font-size:32px, text-align:center, font-family:Inter, color:var(--dark)
+style ".section-sub" -> text-align:center, opacity:0.7, font-size:16px, color:#64748b, max-width:600px, margin:0 auto 24px
+
+# ==========================================
+# META TAGS
+# ==========================================
+
+meta [name=description, content="STFL v1.3 全功能展示 — All features demo"]
+meta [name=theme-color, content="#6366f1"]
+
+# ==========================================
+# EXTERNAL CSS
+# ==========================================
+
+css "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+
+# ==========================================
+# INTERACTIVE JS
+# ==========================================
+
+raw "<script>function stflToast(m){var t=document.createElement('div');t.style.cssText='position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:#1e293b;color:white;padding:12px 24px;border-radius:10px;font-size:14px;z-index:999;opacity:0;transition:opacity .3s';t.textContent=m;document.body.appendChild(t);requestAnimationFrame(function(){t.style.opacity='1'});setTimeout(function(){t.style.opacity='0';setTimeout(function(){t.remove()},300)},2000)}function stflDemoAlert(m){stflToast(m)}</script>"
+
+# ==========================================
+# HERO
+# ==========================================
+
+section [style=background:linear-gradient(135deg,var(--primary),var(--secondary));color:white;padding:100px 20px 80px;text-align:center;position:relative;overflow:hidden]:
+
+  raw "<div style='position:absolute;inset:0;opacity:0.08;background-image:radial-gradient(circle at 25% 25%,white 1px,transparent 1px);background-size:30px 30px'></div>"
+
+  title "STFL v1.3":
+    size = 56
+    weight = 800
+    font = Inter
+    align = center
+    letter-spacing = -1
+
+  text "Simple Text Format Language — 全功能展示":
+    size = 20
+    opacity = 0.9
+    align = center
+    margin = 8 0 0 0
+
+  text "AI-Friendly, No Closing Tags, Pure Text":
+    size = 15
+    opacity = 0.7
+    align = center
+    font = Inter
+    weight = 500
+
+  box [style=margin-top:36px;display:flex;gap:16;justify-content:center;flex-wrap:wrap]:
+
+    button "Get Started" [onclick=stflDemoAlert("'Hello from STFL v1.3!'")]:
+      background = rgba(255,255,255,0.2)
+      color = white
+      padding = 14 32
+      radius = 10
+      border = 1px solid rgba(255,255,255,0.3)
+
+    button "Learn More" [onclick=stflDemoAlert("'STFL is AI-friendly!'")]:
+      background = white
+      color = var(--primary)
+      padding = 14 32
+      radius = 10
+
+# ==========================================
+# 1. BASIC ELEMENTS
+# ==========================================
+
+section [style=padding:80px 20px;background:white]:
+
+  title "1. 基础元素":
+    size = 32
+    align = center
+    font = Inter
+    color = var(--dark)
+
+  text "STFL 提供语义化元素，无需闭合标签。":
+    align = center
+    opacity = 0.7
+    size = 16
+    color = #64748b
+
+  box [style=max-width:800px;margin:32px auto 0]:
+
+    box.demo-card:
+
+      title "标题 / Title (h1)" [id=demo-title]
+
+      subtitle "副标题 / Subtitle (h2)"
+
+      text "段落文本 — 这是最常用的文本元素，自动转为 <p> 标签。"
+
+      button "Demo Button" [onclick=stflDemoAlert("'Button clicked!'")]:
+        background = var(--primary)
+        color = white
+        padding = 12 28
+        radius = 8
+
+      box [style=margin-top:20px;display:flex;gap:8;flex-wrap:wrap]:
+
+        item "列表项一"
+        item "列表项二"
+        item "列表项三"
+
+      box [style=margin-top:20px]:
+
+        input "Type something..." [class=input-demo]
+
+      img "https://placehold.co/800x180/6366f1/white?text=STFL+v1.3+Demonstration&font=raleway" [style=margin-top:16px;border-radius:10px;max-width:100%]
+
+# ==========================================
+# 2. INLINE CSS SYSTEM
+# ==========================================
+
+section.demo-section [id=css-demo, style=padding:80px 20px]:
+
+  title "2. 内联 CSS 系统":
+    size = 32
+    align = center
+    font = Inter
+    color = var(--dark)
+
+  text "冒号语法 + 缩进 = 内联样式。数值自动加 px。":
+    align = center
+    opacity = 0.7
+    size = 16
+    color = #64748b
+
+  box [style=display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:24px;max-width:1000px;margin:32px auto 0]:
+
+    box.demo-card:
+      subtitle "排版":
+        size = 18
+        align = center
+
+      text "20px / 粗体":
+        size = 20
+        weight = 700
+
+      text "14px / 灰色":
+        size = 14
+        color = #64748b
+
+      text "居中 / 行高 2.0":
+        align = center
+        line-height = 2.0
+
+    box.demo-card:
+      subtitle "颜色 & 背景":
+        size = 18
+        align = center
+
+      text "蓝底白字":
+        background = #3b82f6
+        color = white
+        padding = 12
+        radius = 8
+
+      text "渐变":
+        background = linear-gradient(135deg, #f59e0b, #ef4444)
+        color = white
+        padding = 12
+        radius = 8
+
+    box.demo-card:
+      subtitle "边框 & 阴影":
+        size = 18
+        align = center
+
+      text "圆角边框":
+        border = 2px solid var(--primary)
+        padding = 12
+        radius = 12
+
+      text "浮动阴影":
+        box-shadow = 0 4px 20px rgba(99,102,241,0.25)
+        padding = 12
+        radius = 8
+        background = white
+
+# ==========================================
+# 3. CONTAINERS
+# ==========================================
+
+section [style=padding:80px 20px;background:white]:
+
+  title "3. 容器系统":
+    size = 32
+    align = center
+    font = Inter
+    color = var(--dark)
+
+  text "8 种容器：box / section / header / footer / main / nav / article / aside":
+    align = center
+    opacity = 0.7
+    size = 15
+    color = #64748b
+
+  box [style=display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px;max-width:900px;margin:32px auto 0]:
+
+    nav.demo-card [style=text-align:center;padding:20px]:
+      icon "mdi:home":
+        size = 32
+        color = var(--primary)
+      text "nav 导航"
+
+    header.demo-card [style=text-align:center;padding:20px]:
+      icon "mdi:page-layout-header":
+        size = 32
+        color = var(--primary)
+      text "header 页眉"
+
+    main.demo-card [style=text-align:center;padding:20px]:
+      icon "mdi:page-layout-body":
+        size = 32
+        color = var(--primary)
+      text "main 主体"
+
+    footer.demo-card [style=text-align:center;padding:20px]:
+      icon "mdi:page-layout-footer":
+        size = 32
+        color = var(--primary)
+      text "footer 页脚"
+
+  box [style=display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:20px;max-width:800px;margin:24px auto 0]:
+
+    article.demo-card:
+      subtitle "article 文章"
+      text "用于独立内容块，可包含标题、段落。容器基于缩进自动闭合。":
+        opacity = 0.7
+        size = 14
+
+    aside.demo-card:
+      subtitle "aside 侧栏"
+      text "用于补充内容。"
+      item "缩进即嵌套"
+      item "自动闭合"
+      item "可无限层级"
+
+# ==========================================
+# 4. CLASS SHORTHAND
+# ==========================================
+
+section.demo-section [style=padding:80px 20px]:
+
+  title "4. 类名简写":
+    size = 32
+    align = center
+    font = Inter
+    color = var(--dark)
+
+  text "title.large 等价于 title [class=large]，更简洁。":
+    align = center
+    opacity = 0.7
+    size = 16
+    color = #64748b
+
+  box [style=display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:20px;max-width:800px;margin:32px auto 0]:
+
+    box.demo-card [style=text-align:center;padding:24px]:
+      title "title.large":
+        size = 13
+        weight = 600
+        color = #94a3b8
+
+      title.large "Hello World":
+        size = 24
+        color = var(--primary)
+
+    box.demo-card [style=text-align:center;padding:24px]:
+      title "button.primary":
+        size = 13
+        weight = 600
+        color = #94a3b8
+
+      button.primary "Click" [onclick=stflDemoAlert("'Shorthand button!'")]:
+        background = var(--primary)
+        color = white
+        padding = 12 28
+        radius = 8
+
+    box.demo-card [style=text-align:center;padding:24px]:
+      title "box.card.bordered":
+        size = 13
+        weight = 600
+        color = #94a3b8
+
+      box [style=text-align:center;padding:16px;border:2px solid var(--primary);border-radius:8px]:
+        text "Nested box":
+          weight = 600
+
+# ==========================================
+# 5. v1.3 NEW ELEMENTS
+# ==========================================
+
+section [style=padding:80px 20px;background:white]:
+
+  title "5. v1.3 新增元素":
+    size = 32
+    align = center
+    font = Inter
+    color = var(--dark)
+
+  text "raw / video / audio / css / js — 更丰富的内容能力。":
+    align = center
+    opacity = 0.7
+    size = 16
+    color = #64748b
+
+  box [style=display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:24px;max-width:1000px;margin:32px auto 0]:
+
+    box.demo-card:
+      subtitle "Raw HTML"
+      raw "<div style='background:#fef3c7;padding:16px;border-radius:8px;border-left:4px solid #f59e0b'><strong>⚠ Raw 直通</strong> HTML 不做转义，适合自定义组件。</div>"
+
+    box.demo-card:
+      subtitle "Video / Audio"
+      video "https://www.w3schools.com/html/mov_bbb.mp4" [style=width:100%;border-radius:8px;margin-bottom:12px]
+      audio "https://www.w3schools.com/html/horse.mp3" [style=width:100%]
+
+  box [style=display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:24px;max-width:1000px;margin:24px auto 0]:
+
+    box.demo-card:
+      subtitle "CSS 外部样式"
+      text "Font Awesome 图标（通过 css 引入）：":
+        size = 14
+        opacity = 0.7
+      raw "<div style='display:flex;gap:16px;font-size:28px;margin-top:8px'><i class='fas fa-star' style='color:#f59e0b'></i><i class='fas fa-heart' style='color:#ef4444'></i><i class='fas fa-rocket' style='color:#6366f1'></i><i class='fas fa-cog' style='color:#64748b'></i><i class='fas fa-bolt' style='color:#10b981'></i></div>"
+
+    box.demo-card:
+      subtitle "JS 外部脚本"
+      text "通过 js \"url\" 引入 jQuery（body 底部加载）。":
+        size = 14
+        opacity = 0.7
+
+# ==========================================
+# 6. ICONS & SVG
+# ==========================================
+
+section.demo-section [style=padding:80px 20px]:
+
+  title "6. 图标与 SVG":
+    size = 32
+    align = center
+    font = Inter
+    color = var(--dark)
+
+  text "Iconify 100,000+ 图标 + 原生内联 SVG。":
+    align = center
+    opacity = 0.7
+    size = 16
+    color = #64748b
+
+  box [style=display:flex;gap:24px;justify-content:center;flex-wrap:wrap;padding:24px 0;max-width:800px;margin:0 auto]:
+
+    icon "mdi:github":
+      size = 48
+      color = #333
+
+    icon "logos:python":
+      size = 48
+
+    icon "ph:rocket-launch-duotone":
+      size = 48
+      color = var(--primary)
+
+    icon "mdi:heart":
+      size = 48
+      color = var(--secondary)
+
+    icon "mdi:weather-sunny":
+      size = 48
+      color = #f59e0b
+
+    icon "logos:react":
+      size = 48
+
+    icon "simple-icons:typescript":
+      size = 48
+      color = #3178c6
+
+    icon "logos:figma":
+      size = 48
+
+    icon "mdi:palette":
+      size = 48
+      color = var(--primary)
+
+  box [style=text-align:center;padding:12px 0]:
+    link "🔍 Search more icons" -> https://icones.js.org
+
+  box [style=display:flex;gap:24px;justify-content:center;flex-wrap:wrap;padding:24px 0;max-width:600px;margin:0 auto]:
+
+    svg "<svg viewBox='0 0 40 40' width='56' height='56'><circle cx='20' cy='20' r='18' fill='#6366f1'/><text x='20' y='25' text-anchor='middle' fill='white' font-size='18' font-weight='bold'>S</text></svg>"
+
+    svg "<svg viewBox='0 0 40 40' width='56' height='56'><rect x='2' y='2' width='36' height='36' rx='8' fill='#ec4899'/><text x='20' y='25' text-anchor='middle' fill='white' font-size='18' font-weight='bold'>T</text></svg>"
+
+    svg "<svg viewBox='0 0 40 40' width='56' height='56'><polygon points='20,3 37,35 3,35' fill='#f59e0b'/><text x='20' y='27' text-anchor='middle' fill='white' font-size='16' font-weight='bold'>F</text></svg>"
+
+    svg "<svg viewBox='0 0 40 40' width='56' height='56'><path d='M20 3L5 15l15 12 15-12L20 3z' fill='#10b981'/><path d='M5 25l15 12 15-12' fill='none' stroke='#10b981' stroke-width='2'/></svg>"
+
+    svg "<svg viewBox='0 0 40 40' width='56' height='56'><circle cx='20' cy='20' r='16' fill='none' stroke='#6366f1' stroke-width='3' stroke-dasharray='5 3'/><circle cx='20' cy='20' r='10' fill='#6366f1' opacity='0.2'/></svg>"
+
+# ==========================================
+# 7. LINKS & SECURITY
+# ==========================================
+
+section [style=padding:80px 20px;background:white]:
+
+  title "7. 链接与安全":
+    size = 32
+    align = center
+    font = Inter
+    color = var(--dark)
+
+  text "自动过滤危险协议 + meta + CSS 变量。":
+    align = center
+    opacity = 0.7
+    size = 16
+    color = #64748b
+
+  box [style=display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:20px;max-width:900px;margin:32px auto 0]:
+
+    box.demo-card [style=text-align:center]:
+      icon "mdi:web":
+        size = 36
+        color = var(--primary)
+      link "GitHub Repository" -> https://github.com/rsdasdasdad/stfl:
+        size = 16
+      text "URL 经 sanitize_url() 安全过滤，自动拦截 javascript:/data: 协议。":
+        size = 13
+        opacity = 0.6
+        margin = 8 0 0 0
+
+    box.demo-card [style=text-align:center]:
+      icon "mdi:tag-text":
+        size = 36
+        color = var(--primary)
+      text "Meta Tags":
+        weight = 600
+      text "本页 head 已生成：":
+        size = 13
+        opacity = 0.6
+      raw "<code style='background:#f1f5f9;padding:4px 8px;border-radius:4px;font-size:13px'>&lt;meta name=description&gt;</code>"
+
+    box.demo-card [style=text-align:center]:
+      icon "mdi:palette":
+        size = 36
+        color = var(--primary)
+      text "CSS Variables":
+        weight = 600
+      text "var primary=#6366f1 → :root { --primary: ... }":
+        size = 13
+        opacity = 0.6
+      raw "<code style='background:#f1f5f9;padding:4px 8px;border-radius:4px;font-size:13px'>:root { --primary: #6366f1; }</code>"
+
+# ==========================================
+# 8. GLOBAL STYLES
+# ==========================================
+
+section.demo-section [style=padding:80px 20px]:
+
+  title "8. 全局样式系统":
+    size = 32
+    align = center
+    font = Inter
+    color = var(--dark)
+
+  text "style \".sel\" -> prop:val 定义可复用样式。":
+    align = center
+    opacity = 0.7
+    size = 16
+    color = #64748b
+
+  box [style=display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:20px;max-width:700px;margin:32px auto 0]:
+
+    box.demo-card:
+      subtitle "Badge 标签"
+      raw "<span class='badge'>v1.3</span> <span class='badge' style='background:#10b981'>New</span> <span class='badge' style='background:#f59e0b'>Beta</span> <span class='badge' style='background:#ef4444'>Hot</span>"
+
+    box.demo-card:
+      subtitle "代码块"
+      raw "<div class='code-block'><span style='color:#93c5fd'>page</span> <span style='color:#a7f3d0'>\"STFL\"</span><br><span style='color:#93c5fd'>var</span> primary<span style='color:#fca5a5'>=</span><span style='color:#a7f3d0'>#6366f1</span></div>"
+
+# ==========================================
+# 9. CSS VARIABLES
+# ==========================================
+
+section [style=padding:80px 20px;background:white]:
+
+  title "9. CSS 变量引用":
+    size = 32
+    align = center
+    font = Inter
+    color = var(--dark)
+
+  text "var(--primary), var(--secondary), var(--radius)…":
+    align = center
+    opacity = 0.7
+    size = 16
+    color = #64748b
+
+  box [style=display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:16px;max-width:800px;margin:32px auto 0]:
+
+    box [style=background:var(--primary);color:white;padding:24px;border-radius:var(--radius);text-align:center]:
+      text "--primary":
+        weight = 600
+        size = 16
+      text "#6366f1":
+        opacity = 0.8
+        size = 13
+
+    box [style=background:var(--secondary);color:white;padding:24px;border-radius:var(--radius);text-align:center]:
+      text "--secondary":
+        weight = 600
+        size = 16
+      text "#ec4899":
+        opacity = 0.8
+        size = 13
+
+    box [style=background:var(--dark);color:white;padding:24px;border-radius:var(--radius);text-align:center]:
+      text "--dark":
+        weight = 600
+        size = 16
+      text "#1e1b4b":
+        opacity = 0.8
+        size = 13
+
+    box [style=background:#f1f5f9;padding:24px;border-radius:var(--radius);text-align:center]:
+      text "--radius":
+        weight = 600
+        size = 16
+      text "12px":
+        size = 13
+        color = #64748b
+
+# ==========================================
+# FOOTER
+# ==========================================
+
+footer [style=background:#1e293b;color:white;padding:48px 20px;text-align:center]:
+
+  title "STFL v1.3":
+    size = 24
+    color = white
+    font = Inter
+    weight = 700
+
+  text "Simple Text Format Language — AI-Friendly Web Language":
+    color = #94a3b8
+    opacity = 0.8
+    size = 14
+
+  box [style=display:flex;gap:20px;justify-content:center;margin-top:24px]:
+
+    icon "mdi:github":
+      size = 28
+      color = #94a3b8
+
+    icon "mdi:heart":
+      size = 28
+      color = var(--secondary)
+
+    icon "mdi:star":
+      size = 28
+      color = #f59e0b
+
+    icon "mdi:code-tags":
+      size = 28
+      color = var(--primary)
+
+  text "Built with STFL v1.3 — 2026":
+    size = 13
+    color = #64748b
+    margin = 16 0 0 0
+
+# ==========================================
+# EXTERNAL JS
+# ==========================================
+
+js "https://code.jquery.com/jquery-3.7.1.slim.min.js"
