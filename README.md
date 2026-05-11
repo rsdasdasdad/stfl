@@ -1,7 +1,7 @@
 # STFL — Simple Text Format Language
 
 **STFL** is an AI-friendly web language designed to be simpler than HTML. No closing tags, minimal syntax noise, easy for AI to generate, editable with any text editor, and compilable via drag-and-drop.
-
+Warning! If you require this feature, please use docs/ai-guide for initialization.
 ## Features
 
 - **No closing tags** — indentation-based structure auto-closes containers
